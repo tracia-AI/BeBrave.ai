@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeBrave - Susun Laporan Kronologi Trauma Secara Aman & Privat</title>
+  
+  <!-- SEO Metadata -->
+  <meta name="description" content="BeBrave membantu korban perundungan, pelecehan, dan kekerasan menyusun ingatan traumatis menjadi draf laporan kronologis yang terstruktur secara aman, privat, dan penuh empati.">
+  <meta name="keywords" content="bebrave, perlindungan korban, kronologi trauma, kesehatan mental, anti-bullying, laporan privat, aman">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  
+  <!-- JS Modules -->
+  <script src="js/utils.js" defer></script>
+  <script src="js/navigation.js" defer></script>
+  <script src="js/mascot.js" defer></script>
+  <script src="js/slider.js" defer></script>
+  <script src="js/articles.js" defer></script>
+  <script src="js/timeline.js" defer></script>
+  <script src="js/scroll.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Ambient Glowing Background & Particles -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+    <div class="ambient-glow-3"></div>
+    <div class="particles-container"></div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav-container" aria-label="Menu Utama">
+        <a href="#hero" class="nav-brand" data-target="hero">
+          Be<span>Brave</span>
+        </a>
+        <ul class="nav-links nav-links-desktop" role="menubar">
+          <li role="none"><a class="nav-link active" data-target="hero" role="menuitem">Beranda</a></li>
+          <li role="none"><a class="nav-link" data-target="tentang-isu" role="menuitem">Tentang Isu</a></li>
+          <li role="none"><a class="nav-link" data-target="sumber-daya" role="menuitem">Sumber Daya</a></li>
+          <li role="none"><a class="nav-link" data-target="susun-kronologi" role="menuitem">Susun Kronologi</a></li>
+        </ul>
+        <button class="nav-hamburger" aria-label="Buka Menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Dropdown Navigation Menu Overlay -->
+  <div class="nav-mobile-menu" aria-hidden="true">
+    <ul class="nav-links">
+      <li><a class="nav-link active" data-target="hero">Beranda</a></li>
+      <li><a class="nav-link" data-target="tentang-isu">Tentang Isu</a></li>
+      <li><a class="nav-link" data-target="sumber-daya">Sumber Daya</a></li>
+      <li><a class="nav-link" data-target="susun-kronologi">Susun Kronologi</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <main>
+    
+    <!-- Hero Section -->
+    <section id="hero" class="section-hero">
+      <div class="container hero-grid">
+        <!-- Left Side: Copywriting Content -->
+        <div class="hero-content">
+          <h1 class="font-size-hero" style="font-size: var(--font-size-hero); margin-bottom: var(--space-4); letter-spacing: -1px;">Suaramu Kekuatanmu</h1>
+          <p style="font-size: var(--font-size-md); margin-bottom: var(--space-8); line-height: 1.7;">
+            Susun kronologimu secara terstruktur, aman, dan privat bersama kami. Kami membantu Anda merapikan ingatan traumatis menjadi draf dokumen yang siap digunakan untuk perlindungan hukum atau konseling psikologis.
+          </p>
+          <div class="hero-actions" style="display: flex; gap: var(--space-4);">
+            <a href="#susun-kronologi" class="btn btn-primary" data-target="susun-kronologi">
+              Susun Kronologi 
+            </a>
+            <a href="#tentang-isu" class="btn btn-secondary" data-target="tentang-isu">
+              Mengapa ini Penting?
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Side: Interactive Animated Mascot -->
+      <div class="hero-visual">
+    <video
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="metadata"
+        style="width:100%; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.2);">
+        <source src="hero-video.mp4" type="video/mp4">
+    </video>
+</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Storytelling Slider Section -->
+    <section id="tentang-isu" class="section-slider">
+      <div class="container">
+        <div class="slider-section-header">
+          <span class="article-category">Mengapa Ini Penting?</span>
+          <h2 style="font-size: var(--font-size-xxl); margin-top: var(--space-2); margin-bottom: var(--space-4);">
+            Trauma Membuat Cerita Terfragmentasi
+          </h2>
+          <p style="margin: 0 auto; text-align: center;">
+            Ketika seseorang mengalami tekanan berat, memori tersimpan secara acak. BeBrave membantu menyelaraskan kembali alur cerita Anda.
+          </p>
+        </div>
+
+        <!-- Apple-style Carousel Slider Component wrapper -->
+        <div class="slider-wrapper">
+          <div class="slider-container">
+            <!-- Injected dynamically by slider.js -->
+          </div>
+        </div>
+
+        <!-- Carousel Navigation Controls -->
+        <div class="slider-controls">
+          <button class="slider-btn slider-btn-prev" aria-label="Slide sebelumnya">
+            ←
+          </button>
+          <div class="slider-dots" role="tablist">
+            <!-- Dots injected dynamically by slider.js -->
+          </div>
+          <button class="slider-btn slider-btn-next" aria-label="Slide berikutnya">
+            →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mental Health Resource Section -->
+    <section id="sumber-daya" class="section-articles">
+      <div class="container">
+        <div class="articles-header">
+          <h2 style="font-size: var(--font-size-xxl); margin-bottom: var(--space-4);">
+            Sumber Daya Kesehatan Mental
+          </h2>
+          <p style="margin: 0 auto;">
+            Temukan panduan terpercaya dari lembaga medis dan kemanusiaan internasional untuk membantu proses pemulihan serta pemahaman hak-hak Anda.
+          </p>
+        </div>
+
+        <!-- Infinite Loop horizontal carousel wrapper -->
+        <div class="articles-carousel-wrapper">
+          <div class="articles-carousel">
+            <!-- Injected dynamically by articles.js -->
+          </div>
+        </div>
+
+        <!-- Articles Nav Controls -->
+        <div class="slider-controls" style="margin-top: var(--space-8);">
+          <button class="slider-btn articles-btn-prev" aria-label="Artikel sebelumnya">
+            ←
+          </button>
+          <button class="slider-btn articles-btn-next" aria-label="Artikel berikutnya">
+            →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Timeline Section -->
+    <section id="susun-kronologi" class="section-timeline">
+      <div class="container">
+        <div class="timeline-header">
+          <span class="article-category" style="color: var(--color-accent);">Asisten Virtualmu</span>
+          <h2 style="font-size: var(--font-size-xxl); margin-top: var(--space-2); margin-bottom: var(--space-4); color: var(--color-white);">
+            Susun Kronologi Kejadianmu
+          </h2>
+          <p style="margin: 0 auto; color: rgba(255, 255, 255, 0.8);">
+            Mengingat kembali memori yang menyakitkan memang berat. Tidak perlu terburu-buru. Ambil napas dalam-dalam, dan tuliskan apa yang dirasa nyaman untuk Anda ceritakan saat ini secara perlahan.
+          </p>
+        </div>
+
+        <div class="timeline-grid">
+          <!-- Left Column: User Input Form -->
+          <div class="timeline-card">
+            <div>
+              <div class="timeline-input-header">
+                <span class="timeline-input-label">Ceritakan kejadian yang dialami</span>
+                <span class="char-counter" id="char-counter">0 / 5000 karakter</span>
+              </div>
+              <textarea class="timeline-textarea" id="timeline-input" maxlength="5000" placeholder="Contoh: Kejadian pertama terjadi bulan lalu di dekat kantin sekolah. Ada kakak kelas bernama Ridwan yang mendorong saya hingga terjatuh. Kemarin mereka memalak uang jajan saya lagi di toilet jam 2 siang dengan rekaman CCTV menyala. Saya merasa sangat takut dan cemas untuk pergi ke sekolah.."></textarea>
+            </div>
+            
+            <div class="timeline-card-footer">
+              <span>🔒 Kerahasiaan cerita Anda terjamin</span>
+              <button class="btn btn-primary btn-ai" id="timeline-generate-btn" style="width: auto; margin-top: var(--space-4);">
+                Susun Laporan Berbasis AI 🪄
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: AI Format Output Screen -->
+          <div class="timeline-card">
+            <div>
+              <div class="timeline-output-header">
+                <span class="timeline-output-label">Hasil Draft Kronologi</span>
+                <div class="output-actions">
+                  <button class="btn-icon" id="timeline-copy-btn" title="Salin ke Papan Klip" aria-label="Salin draf laporan">
+                    📋
+                  </button>
+                  <button class="btn-icon" id="timeline-download-btn" title="Unduh File Teks (.txt)" aria-label="Unduh draf laporan">
+                    💾
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Report Box -->
+              <div class="timeline-output-box" id="timeline-output">
+                <div class="timeline-placeholder">
+                  <div class="timeline-placeholder-icon">🛡️</div>
+                  <p style="font-weight: var(--weight-medium); color: var(--color-primary);">Garis Waktu Kronologis Kosong</p>
+                  <p>Tulis cerita Anda di panel sebelah kiri dan klik tombol untuk menyusun kronologi yang rapi di sini.</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Disclaimer note box -->
+            <div style="background-color: rgba(176, 138, 100, 0.1); border-left: 3px solid var(--color-accent); padding: var(--space-3); border-radius: var(--radius-sm); margin-top: var(--space-4); font-size: var(--font-size-xs); line-height: 1.5; color: var(--color-text-muted);">
+              <strong>PENTING:</strong> Hasil di atas hanyalah draf pembantu terstruktur. Anda dipersilakan menyunting kembali draf ini sebelum menggunakannya untuk laporan resmi ke pihak berwajib atau pendamping psikologis.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section-testimonials">
+      <div class="container" style="display: flex; justify-content: center;">
+        <div class="testimonial-card">
+          <h3 class="testimonial-title">Kisah Keberanian</h3>
+          <blockquote class="testimonial-quote">
+            "Awalnya saya takut untuk bercerita karena ingatan saya kacau dan tidak beraturan. Namun, program bantu BeBrave sangat sabar mendampingi dan memecah kekacauan itu menjadi catatan kronologis yang berurutan. Ini mempermudah saya membawa berkas draf laporan yang jelas saat melapor ke pihak berwajib dan psikolog psikologis."
+          </blockquote>
+          <p class="testimonial-author">— Pengguna Anonim (Survivor Perundungan)</p>
+          <div class="testimonial-tags">
+            <span class="testimonial-tag">🛡️ Data Dekripsi Lokal</span>
+            <span class="testimonial-tag">👁️‍🗨️ Identitas Perlindungan</span>
+            <span class="testimonial-tag">🔒 Enkripsi Client-Side</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Col 1: Brand & Desc -->
+        <div>
+          <a href="#hero" class="nav-brand" style="color: var(--color-primary); font-size: var(--font-size-lg); margin-bottom: var(--space-4);">
+            Be<span>Brave</span>
+          </a>
+          <p style="font-size: var(--font-size-xs); line-height: 1.6; max-width: 250px;">
+            BeBrave adalah platform sosial nirlaba yang berdedikasi membantu korban pelecehan, perundungan, dan kekerasan memulihkan rasa aman mereka melalui penataan memori yang aman.
+          </p>
+        </div>
+        <!-- Col 2: Services -->
+        <div>
+          <h4 style="font-size: var(--font-size-sm); margin-bottom: var(--space-4); font-weight: var(--weight-bold);">Fitur Utama</h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--font-size-xs); color: var(--color-text-muted);">
+            <li><a href="#susun-kronologi">Susun Kronologi</a></li>
+            <li><a href="#tentang-isu">Mengapa Penting?</a></li>
+            <li><a href="#sumber-daya">Panduan Medis</a></li>
+            <li><a href="#hero">Dukungan Privat</a></li>
+          </ul>
+        </div>
+        <!-- Col 3: Partners -->
+        <div>
+          <h4 style="font-size: var(--font-size-sm); margin-bottom: var(--space-4); font-weight: var(--weight-bold);">Mitra Rujukan</h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--font-size-xs); color: var(--color-text-muted);">
+            <li><a href="https://kemkes.go.id" target="_blank" rel="noopener">Kementerian Kesehatan RI</a></li>
+            <li><a href="https://www.who.int" target="_blank" rel="noopener">WHO Indonesia</a></li>
+            <li><a href="https://www.unicef.org/indonesia/id" target="_blank" rel="noopener">UNICEF Indonesia</a></li>
+            <li><a href="https://komnasperempuan.go.id" target="_blank" rel="noopener">Komnas Perempuan</a></li>
+          </ul>
+        </div>
+        <!-- Col 4: Contacts -->
+        <div>
+          <h4 style="font-size: var(--font-size-sm); margin-bottom: var(--space-4); font-weight: var(--weight-bold);">Darurat & Hubungi</h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--font-size-xs); color: var(--color-text-muted);">
+            <li>Hotline KPPPA: <a href="tel:129"><strong>Call 129</strong></a></li>
+            <li>Hotline Kemenkes: <a href="tel:119"><strong>Call 119 Ext 8</strong></a></li>
+            <li>Pusat Bantuan BeBrave</li>
+            <li>E-mail: support@bebrave.org</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p style="font-size: var(--font-size-xs);">© 2026 BeBrave Platform. Dibuat dengan kepedulian sosial & privasi browser penuh.</p>
+        <div style="display: flex; gap: var(--space-4); font-size: var(--font-size-xs); color: var(--color-text-muted);">
+          <a href="#">Kebijakan Privasi</a>
+          <a href="#">Syarat Ketentuan</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Elements -->
+  <!-- Back to top button -->
+  <button class="back-to-top" aria-label="Kembali ke atas">
+    ↑
+  </button>
+
+</body>
+</html>

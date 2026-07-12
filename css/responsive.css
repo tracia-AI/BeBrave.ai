@@ -1,0 +1,236 @@
+/* BeBrave responsive.css - Media queries and accessibility */
+
+/* Laptop (Under 1280px) */
+@media (max-width: 1280px) {
+  :root {
+    --max-width: 1140px;
+  }
+
+  .hero-grid {
+    gap: var(--space-8);
+  }
+
+  .slider-card {
+    width: 800px;
+    height: 480px;
+  }
+}
+
+/* Tablet (Under 768px) */
+@media (max-width: 768px) {
+  :root {
+    --space-20: 3.5rem;
+    --space-24: 4.5rem;
+    --space-32: 6rem;
+  }
+
+  section {
+    padding: var(--space-12) 0;
+  }
+
+  /* Navigation Drawer toggle on Tablet & Mobile */
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .nav-links-desktop {
+    display: none;
+  }
+
+  /* Hero Section Stacked */
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    text-align: center;
+    padding-top: calc(var(--header-height) + var(--space-4));
+  }
+
+  .hero-content {
+    align-items: center;
+  }
+
+  .hero-content p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  /* Storytelling Slider adjustments */
+  .slider-card {
+    width: 600px;
+    height: auto;
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+
+  .slider-card-left {
+    height: 250px;
+  }
+
+  .slider-card-content {
+    padding: var(--space-6);
+  }
+
+  .slider-card.dark-green {
+    grid-template-columns: 1fr;
+  }
+
+  /* AI Timeline columns stack */
+  .timeline-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  /* Footer Layout Stacked */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: var(--space-4);
+    text-align: center;
+  }
+}
+
+/* Mobile (Under 480px / 390px optimized) */
+@media (max-width: 480px) {
+  :root {
+    --space-12: 2.5rem;
+    --space-16: 3rem;
+  }
+
+  body {
+    font-size: var(--font-size-sm);
+  }
+
+  .container {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .header {
+    top: var(--space-2);
+  }
+
+  .nav-container {
+    border-radius: var(--radius-lg);
+    margin: 0 var(--space-2);
+  }
+
+  /* Hero adjustments */
+  .hero-visual {
+    margin-top: var(--space-4);
+  }
+
+  .hero-mascot-wrapper {
+    max-width: 250px;
+  }
+
+  /* Storytelling Slider: One Card Visible Layout */
+  .slider-card {
+    width: calc(100vw - 32px); /* Edge to edge with padding gutter */
+    margin: 0 var(--space-2);
+    transform: scale(1) !important;
+    opacity: 0.2;
+    filter: blur(2px) !important;
+  }
+
+  .slider-card.active {
+    opacity: 1;
+    filter: blur(0) !important;
+  }
+
+  .slider-card-left {
+    height: 180px;
+  }
+
+  .slider-info-box {
+    padding: var(--space-3);
+  }
+
+  /* Buttons Full Width on Mobile */
+  .btn, .btn-ai {
+    width: 100%;
+  }
+
+  /* Article cards stack */
+  .article-card {
+    width: 100%;
+  }
+
+  /* Form spacing in AI timeline */
+  .timeline-card {
+    padding: var(--space-4);
+  }
+
+  .timeline-textarea, .timeline-output-box {
+    height: 220px;
+  }
+
+  /* Quote testimonial adjustments */
+  .testimonial-card {
+    padding: var(--space-6);
+  }
+
+  .testimonial-quote {
+    font-size: var(--font-size-sm);
+  }
+
+  /* Footer stack */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
+
+/* Accessibility: Support prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+
+  /* Disable parallax & floating animations */
+  .mascot-float,
+  .mascot-breathe,
+  .eyelid,
+  .ambient-glow-1,
+  .ambient-glow-2,
+  .ambient-glow-3,
+  .particle,
+  .article-card,
+  .btn,
+  .slider-card {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
+  .slider-container {
+    transition: none !important;
+  }
+
+  .reveal-section {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
