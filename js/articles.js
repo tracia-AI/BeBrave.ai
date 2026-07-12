@@ -23,7 +23,7 @@ const ARTICLE_DATA = [
         summary: "Panduan mendalam mengidentifikasi intimidasi terselubung di sekolah atau dunia maya serta peran krusial support system dalam pemulihan korban.",
         source: "UNICEF",
         readTime: "7 menit baca",
-        url: "https://www.unicef.org/indonesia/id/kesehatan-mental"
+        url: "https://www.unicef.org/indonesia/id/topics/mental-health"
     },
     {
         id: 3,
@@ -41,9 +41,9 @@ const ARTICLE_DATA = [
         category: "Terapi Pemulihan",
         title: "Membangun Resiliensi dan Rasa Aman Pasca Kekerasan",
         summary: "Tips melatih ketahanan mental, membangun kembali rasa percaya diri yang runtuh, serta teknik grounding untuk mengatasi kepanikan mendadak.",
-        source: "Verywell Mind",
+        source: "American Psychological Association (APA)",
         readTime: "4 menit baca",
-        url: "https://www.verywellmind.com/coping-with-trauma-and-abuse-5219582"
+        url: "https://www.apa.org/topics/resilience/building-your-resilience"
     },
     {
         id: 5,
@@ -53,7 +53,7 @@ const ARTICLE_DATA = [
         summary: "Informasi lengkap tentang gejala stres pasca trauma (PTSD) yang menetap dan daftar rujukan lembaga profesional di Indonesia untuk pendampingan.",
         source: "Kementerian Kesehatan Republik Indonesia",
         readTime: "8 menit baca",
-        url: "https://ayoshat.kemkes.go.id/pentingnya-menjaga-kesehatan-mental"
+        url: "https://ayosehat.kemkes.go.id/pentingnya-kesehatan-mental-bagi-remaja"
     }
 ];
 
@@ -218,10 +218,18 @@ function initArticlesCarousel() {
 
   /**
    * Drag Handling
+   * A small movement threshold is used so that natural mouse jitter
+   * during a click doesn't get treated as a drag - this was causing
+   * the "Baca" links inside cards to become unclickable, since the
+   * card would shift out from under the cursor before mouseup.
    */
+  let hasDragged = false;
+  const DRAG_THRESHOLD = 5; // pixels
+
   function handleDragStart(e) {
     if (isTransitioning) return;
     isDragging = true;
+    hasDragged = false;
     startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
     track.style.transition = 'none';
     
@@ -234,13 +242,25 @@ function initArticlesCarousel() {
     if (!isDragging) return;
     const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
     dragOffset = currentX - startX;
-    
-    track.style.transform = `translateX(${currentTranslate + dragOffset}px)`;
+
+    // Only visually drag once movement passes the threshold, so a plain
+    // click never shifts the card out from under the cursor
+    if (Math.abs(dragOffset) > DRAG_THRESHOLD) {
+      hasDragged = true;
+      track.style.transform = `translateX(${currentTranslate + dragOffset}px)`;
+    }
   }
 
   function handleDragEnd() {
     if (!isDragging) return;
     isDragging = false;
+
+    if (!hasDragged) {
+      // Movement never passed the threshold - this was a click/tap,
+      // not a drag. Don't move the carousel, let the click go through.
+      dragOffset = 0;
+      return;
+    }
     
     // Snap threshold: 25% of slide width
     const threshold = slideWidth * 0.25;

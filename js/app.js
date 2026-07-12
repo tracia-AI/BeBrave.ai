@@ -99,12 +99,41 @@ function createFloatingParticles() {
   }
 }
 
-// Fungsi untuk AI
-async function susunLaporanAI(teksCerita) {
-    const API_KEY = "";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+// ============================================================
+// AI Integration - Google Gemini API
+// ============================================================
+//
+// PENTING (KEAMANAN API KEY):
+// Karena repo ini public dan website ini static (tanpa backend),
+// API key TIDAK BISA disembunyikan sepenuhnya dari source code.
+// Untuk tetap aman dipublikasikan di GitHub, key ini WAJIB dibatasi
+// (restricted) dulu di Google AI Studio / Google Cloud Console:
+//   1. Buka https://aistudio.google.com/app/apikey (atau Cloud Console
+//      -> APIs & Services -> Credentials)
+//   2. Pilih API key yang dipakai di sini
+//   3. "Application restrictions" -> "Websites" -> tambahkan URL
+//      domain GitHub Pages kamu, contoh: https://tracia-ai.github.io/*
+//   4. "API restrictions" -> batasi hanya ke "Generative Language API"
+// Dengan begini, walaupun key ini kelihatan di source code publik,
+// key HANYA bisa dipanggil dari domain BeBrave sendiri, jadi orang
+// lain tidak bisa mencuri dan memakainya dari tempat lain.
+const GEMINI_API_KEY = "";
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-     const prompt = `
+/**
+ * Memanggil Google Gemini API untuk menyusun cerita bebas pengguna
+ * menjadi draf laporan kronologi yang terstruktur.
+ * Melempar error (throw) jika gagal, supaya pemanggilnya (timeline.js)
+ * bisa fallback otomatis ke parser lokal tanpa membuat halaman error.
+ * @param {string} teksCerita - cerita mentah dari pengguna
+ * @returns {Promise<string>} - teks laporan kronologi dari AI
+ */
+async function callGeminiAPI(teksCerita) {
+  if (!GEMINI_API_KEY || GEMINI_API_KEY.startsWith("PASTE_")) {
+    throw new Error("Gemini API key belum di-set di app.js.");
+  }
+
+  const prompt = `
 Kamu adalah AI Assistant BeBrave.
 
 Tugasmu adalah membantu pengguna menyusun Draf Laporan Kronologi berdasarkan cerita yang diberikan.
@@ -205,78 +234,6 @@ JANGAN mengubah menjadi:
 - Gangguan mental
 
 ====================================================
-CONTOH 1
-====================================================
-
-Input:
-
-Saya dipukul teman saya di sekolah pada Januari 2025.
-Saya punya foto luka.
-
-Output:
-
-1. WAKTU & TANGGAL KEJADIAN
-- Januari 2025
-
-2. TEMPAT KEJADIAN PERKARA
-- Sekolah
-
-3. PIHAK TERLIBAT
-- Korban
-- Teman
-
-4. RINCIAN KRONOLOGI KEJADIAN
-- Kejadian 1: Korban dipukul oleh teman di sekolah.
-- Kejadian 2: Korban memiliki foto luka sebagai bukti.
-
-5. INDIKASI BUKTI PENDUKUNG
-- Foto luka
-
-6. DAMPAK YANG DISEBUTKAN PENGGUNA
-- Tidak disebutkan.
-
-====================================================
-CONTOH 2
-====================================================
-
-Input:
-
-Saya merasa takut setiap pulang malam.
-
-Output:
-
-1. WAKTU & TANGGAL KEJADIAN
-- Tidak disebutkan.
-
-2. TEMPAT KEJADIAN PERKARA
-- Tidak disebutkan.
-
-3. PIHAK TERLIBAT
-- Korban
-
-4. RINCIAN KRONOLOGI KEJADIAN
-- Kejadian 1: Korban merasa takut setiap pulang malam.
-
-5. INDIKASI BUKTI PENDUKUNG
-- Tidak disebutkan.
-
-6. DAMPAK YANG DISEBUTKAN PENGGUNA
-- Merasa takut.
-
-====================================================
-CONTOH 3
-====================================================
-
-Input:
-
-Saya tidak menyebutkan tempat kejadian.
-
-Output:
-
-2. TEMPAT KEJADIAN PERKARA
-- Tidak disebutkan.
-
-====================================================
 FORMAT OUTPUT
 ====================================================
 
@@ -318,40 +275,24 @@ Sebelum memberikan jawaban:
 - Pastikan seluruh isi laporan hanya berasal dari cerita pengguna.
 `;
 
-    const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            contents: [
-                {
-                    parts: [
-                        {
-                            text: prompt
-                        }
-                    ]
-                }
-            ]
-        })
-    });
+  const response = await fetch(GEMINI_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }]
+    })
+  });
 
-    const data = await response.json();
+  if (!response.ok) {
+    throw new Error(`Gemini API merespons dengan error: ${response.status}`);
+  }
 
-    return data.candidates[0].content.parts[0].text;
+  const data = await response.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    throw new Error("Gemini API tidak mengembalikan hasil teks.");
+  }
+
+  return text.trim();
 }
-
-// Tambahkan kode ini agar tombolmu benar-benar berfungsi:
-document.addEventListener('DOMContentLoaded', () => {
-    const btnSusun = document.querySelector('.btn-susun-ai'); // Sesuaikan dengan class tombolmu
-    if (btnSusun) {
-        btnSusun.addEventListener('click', async () => {
-            const inputTeks = document.querySelector('textarea').value; 
-            const hasilDraft = document.querySelector('.hasil-draft'); // Sesuaikan dengan class kotak hasil
-            
-            hasilDraft.innerText = "Sedang menyusun laporan...";
-            const hasil = await susunLaporanAI(inputTeks);
-            hasilDraft.innerText = hasil;
-        });
-    }
-});

@@ -40,9 +40,13 @@ function initTimelineGenerator() {
   }
 
   /**
-   * Simulated AI formatting trigger
+   * AI formatting trigger.
+   * Tries the real Gemini API first (Integrasi AI). If the API key is
+   * missing, quota is exhausted, or the network call fails for any
+   * reason, it silently falls back to the local simulated parser so
+   * the page never shows a broken/error state to the user.
    */
-  generateBtn.addEventListener('click', () => {
+  generateBtn.addEventListener('click', async () => {
     const text = textarea.value.trim();
     
     if (text.length < 15) {
@@ -63,55 +67,69 @@ function initTimelineGenerator() {
     generateBtn.disabled = true;
     generateBtn.style.opacity = '0.6';
 
-    // 2. Parse Chronology after simulated delay of 2000ms
-    setTimeout(() => {
+    let reportText;
+
+    try {
+      // 2a. Try the real Gemini API call first
+      reportText = await callGeminiAPI(text);
+    } catch (err) {
+      // 2b. Fallback: local simulated parser (fully offline, never fails)
+      console.warn("Gemini API tidak tersedia, memakai mode cadangan lokal:", err);
       const parsedData = parseChronology(text);
-      const reportHtml = generateReportHTML(parsedData);
-      
-      // Store current parsed data globally on elements to allow copy/download
-      outputBox.setAttribute('data-parsed', JSON.stringify(parsedData));
+      reportText = generateReportPlainText(parsedData);
+      showToast("Mode cadangan lokal digunakan (API tidak tersedia).");
+    }
 
-      // Clear loading state
-      outputBox.innerHTML = '';
+    // Store the final report text so copy/download can reuse it directly
+    outputBox.dataset.reportText = reportText;
 
-      // 3. Start typing animation
-      let i = 0;
-      const speed = 5; // milliseconds per letter
-      
-      function type() {
-        if (i < reportHtml.length) {
-          if (reportHtml.charAt(i) === '<') {
-            // Find end of HTML tag
-            const tagEnd = reportHtml.indexOf('>', i);
-            if (tagEnd !== -1) {
-              outputBox.innerHTML += reportHtml.substring(i, tagEnd + 1);
-              i = tagEnd + 1;
-            } else {
-              outputBox.innerHTML += reportHtml.charAt(i);
-              i++;
-            }
+    // Clear loading state
+    outputBox.innerHTML = '';
+
+    // Escape HTML special characters so raw AI text renders safely,
+    // then wrap in a pre-wrap div so line breaks are preserved
+    const escaped = reportText
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    const reportHtml = `<div class="generated-report-text" style="white-space: pre-wrap;">${escaped}</div>`;
+
+    // 3. Start typing animation
+    let i = 0;
+    const speed = 5; // milliseconds per letter
+
+    function type() {
+      if (i < reportHtml.length) {
+        if (reportHtml.charAt(i) === '<') {
+          // Find end of HTML tag
+          const tagEnd = reportHtml.indexOf('>', i);
+          if (tagEnd !== -1) {
+            outputBox.innerHTML += reportHtml.substring(i, tagEnd + 1);
+            i = tagEnd + 1;
           } else {
             outputBox.innerHTML += reportHtml.charAt(i);
             i++;
           }
-          // Scroll down as typing proceeds
-          outputBox.scrollTop = outputBox.scrollHeight;
-          requestAnimationFrame(type);
         } else {
-          // Typing finished!
-          generateBtn.disabled = false;
-          generateBtn.style.opacity = '1';
-          
-          // Emit success event to trigger mascot wave celebration
-          emitter.emit('timeline-generated');
-          showToast("Kronologi terstruktur berhasil disusun!");
+          outputBox.innerHTML += reportHtml.charAt(i);
+          i++;
         }
+        // Scroll down as typing proceeds
+        outputBox.scrollTop = outputBox.scrollHeight;
+        requestAnimationFrame(type);
+      } else {
+        // Typing finished!
+        generateBtn.disabled = false;
+        generateBtn.style.opacity = '1';
+
+        // Emit success event to trigger mascot wave celebration
+        emitter.emit('timeline-generated');
+        showToast("Kronologi terstruktur berhasil disusun!");
       }
+    }
 
-      // Begin animation frame typing loop
-      requestAnimationFrame(type);
-
-    }, 2000);
+    // Begin animation frame typing loop
+    requestAnimationFrame(type);
   });
 
   /**
@@ -119,16 +137,13 @@ function initTimelineGenerator() {
    */
   if (copyBtn) {
     copyBtn.addEventListener('click', () => {
-      const parsedAttr = outputBox.getAttribute('data-parsed');
-      if (!parsedAttr) {
+      const reportText = outputBox.dataset.reportText;
+      if (!reportText) {
         showToast("Susun laporan terlebih dahulu sebelum menyalin.");
         return;
       }
 
-      const parsed = JSON.parse(parsedAttr);
-      const plainText = generateReportPlainText(parsed);
-
-      navigator.clipboard.writeText(plainText)
+      navigator.clipboard.writeText(reportText)
         .then(() => {
           showToast("Kronologi disalin ke papan klip!");
         })
@@ -144,17 +159,14 @@ function initTimelineGenerator() {
    */
   if (downloadBtn) {
     downloadBtn.addEventListener('click', () => {
-      const parsedAttr = outputBox.getAttribute('data-parsed');
-      if (!parsedAttr) {
+      const reportText = outputBox.dataset.reportText;
+      if (!reportText) {
         showToast("Susun laporan terlebih dahulu sebelum mengunduh.");
         return;
       }
 
-      const parsed = JSON.parse(parsedAttr);
-      const plainText = generateReportPlainText(parsed);
-
       // Create Blob and triggers click link
-      const blob = new Blob([plainText], { type: 'text/plain;charset=utf-8' });
+      const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
