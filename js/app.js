@@ -13,7 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initTimelineGenerator();
     initScrollEffects();
   } catch (err) {
-    console.error("Module initialization error:", err);
+    console.error("=== GEMINI ERROR ===", err);
+
+    const parsedData = parseChronology(text);
+    reportText = generateReportPlainText(parsedData);
+    showToast("Mode cadangan lokal digunakan (API tidak tersedia).");
   }
 
   // Run premium micro-interactions
@@ -117,8 +121,9 @@ function createFloatingParticles() {
 // Dengan begini, walaupun key ini kelihatan di source code publik,
 // key HANYA bisa dipanggil dari domain BeBrave sendiri, jadi orang
 // lain tidak bisa mencuri dan memakainya dari tempat lain.
-const GEMINI_API_KEY = "";
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_KEY = "API_KEY_HERE";
+const GEMINI_API_URL =
+`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent`;
 
 /**
  * Memanggil Google Gemini API untuk menyusun cerita bebas pengguna
@@ -136,110 +141,218 @@ async function callGeminiAPI(teksCerita) {
   const prompt = `
 Kamu adalah AI Assistant BeBrave.
 
-Tugasmu adalah membantu pengguna menyusun Draf Laporan Kronologi berdasarkan cerita yang diberikan.
+Tugasmu adalah mengubah cerita pengguna menjadi draf laporan kronologi.
 
-====================================================
-ATURAN WAJIB
-====================================================
+ATURAN PALING PENTING
 
-1. Gunakan HANYA informasi yang diberikan pengguna.
-2. Jangan pernah menambahkan informasi baru.
-3. Jangan menebak informasi yang tidak disebutkan.
-4. Jika suatu informasi tidak tersedia, tulis:
-   "Tidak disebutkan."
-5. Jangan membuat diagnosis psikologis maupun medis.
-6. Jangan menambahkan bukti yang tidak disebutkan pengguna.
-7. Jangan mengubah urutan kejadian.
-8. Gunakan bahasa Indonesia yang formal, netral, objektif, dan mudah dipahami.
-9. Jangan memberikan opini pribadi.
-10. Jangan memberikan saran hukum.
-11. Jangan menyalahkan korban.
-12. Fokus hanya menyusun kronologi berdasarkan fakta.
+- Seluruh isi laporan HARUS berasal dari cerita pengguna.
+- DILARANG menambahkan informasi baru.
+- DILARANG menebak informasi.
+- DILARANG mengubah urutan kejadian.
+- DILARANG membuat kesimpulan.
+- DILARANG membuat diagnosis psikologis atau medis.
+- DILARANG memberi saran hukum.
+- DILARANG menyalahkan korban.
+- Jika informasi tidak tersedia, tulis:
+  Tidak disebutkan.
 
-====================================================
-ATURAN EKSTRAKSI
-====================================================
+==========================================
+A. WAKTU & TANGGAL KEJADIAN
+==========================================
 
-A. WAKTU
-- Ambil tanggal, bulan, tahun, jam, atau rentang waktu yang benar-benar disebutkan.
-- Jika tidak ada, tulis:
+Ambil HANYA informasi waktu yang benar-benar disebutkan.
+
+Yang termasuk waktu:
+
+- hari
+- tanggal
+- bulan
+- tahun
+- jam
+- pukul
+- rentang waktu
+
+Contoh:
+
+Senin
+12 Januari 2025
+jam 09.30
+pukul 14.00
+sekitar pukul 16.15
+
+PENTING:
+
+JANGAN MEMECAH FORMAT JAM.
+
+BENAR
+
+09.30
+11.00
+15.30
+
+SALAH
+
+09.
+30
+
+11.
+00
+
+15.
+30
+
+Jika tidak disebutkan:
+
 Tidak disebutkan.
 
-B. TEMPAT
-- Ambil lokasi yang benar-benar disebutkan.
-- Jangan menebak.
-- Jika tidak ada:
-Tidak disebutkan.
+==========================================
+B. TEMPAT KEJADIAN
+==========================================
 
+Tuliskan HANYA lokasi fisik atau media tempat kejadian berlangsung.
+
+Contoh BENAR
+
+kantin sekolah
+ruang kelas
+rumah
+kantor
+Instagram
+WhatsApp
+Telegram
+
+Yang termasuk TEMPAT:
+
+- lokasi fisik
+- media komunikasi
+
+JANGAN memasukkan:
+
+- nama orang
+- hari
+- waktu
+- hubungan
+
+SALAH
+
+Teman kelas
+Guru
+Senin
+
+==========================================
 C. PIHAK TERLIBAT
-- Hanya tuliskan manusia atau pihak yang benar-benar terlibat.
+==========================================
 
-Contoh BENAR:
-- Korban
-- Pelaku
-- Mantan pacar
-- Guru
-- Rekan kerja
-- Teman
+Tuliskan HANYA manusia atau pihak yang terlibat.
 
-Contoh SALAH:
-- Februari
-- Instagram
-- WhatsApp
-- Senin
-- Rumah
-- Mobil
+Contoh BENAR
 
-Jika identitas tidak diketahui, gunakan:
-- Korban
-- Pelaku
+Korban
+Pelaku
+Guru
+Teman kelas
+Orang tua
+Kepala sekolah
 
+JANGAN memasukkan:
+
+hari
+tanggal
+bulan
+waktu
+tempat
+media sosial
+aplikasi
+
+SALAH
+
+Senin
+WhatsApp
+Instagram
+Rumah
+09.30
+
+Jika identitas tidak diketahui gunakan:
+
+Korban
+Pelaku
+
+==========================================
 D. KRONOLOGI
-- Pecah menjadi poin-poin berdasarkan urutan waktu.
-- Jangan mengurangi informasi penting.
-- Jangan menambahkan cerita baru.
-- Gunakan format:
+==========================================
+
+Susun kronologi sesuai urutan cerita.
+
+JANGAN mengubah urutan.
+
+JANGAN menghilangkan informasi penting.
+
+JANGAN menambahkan cerita.
+
+JANGAN memecah kalimat karena tanda titik pada format jam.
+
+Misalnya:
+
+Hari Senin sekitar jam 09.30 saya berada di kantin sekolah.
+
+TETAP menjadi SATU kalimat.
+
+Bukan
+
+Hari Senin sekitar jam 09.
+
+30 saya berada di kantin sekolah.
+
+Gunakan format:
 
 - Kejadian 1:
 - Kejadian 2:
 - Kejadian 3:
 
+==========================================
 E. BUKTI PENDUKUNG
-Hanya tampilkan bukti yang disebutkan pengguna.
+==========================================
 
-Contoh:
-- Screenshot percakapan
-- Foto
-- Video
-- Rekaman suara
-- Riwayat panggilan
-- Email
+Tuliskan HANYA bukti yang benar-benar disebutkan.
 
-Jika tidak disebutkan:
+Contoh
+
+Screenshot percakapan
+Foto
+Video
+Rekaman suara
+Email
+Chat WhatsApp
+
+Jika tidak ada:
+
 Tidak disebutkan.
 
+==========================================
 F. DAMPAK
-Hanya tuliskan dampak yang benar-benar disebutkan pengguna.
+==========================================
 
-Contoh:
-- Merasa takut
-- Merasa cemas
-- Sulit tidur
-- Merasa tertekan
+Tuliskan HANYA dampak yang benar-benar disebutkan.
 
-JANGAN mengubah menjadi:
-- Anxiety
-- PTSD
-- Depresi
-- Gangguan mental
+Contoh
 
-====================================================
+Merasa takut
+Merasa cemas
+Sulit tidur
+Menangis
+Tidak fokus belajar
+
+JANGAN mengubah menjadi istilah medis.
+
+SALAH
+
+PTSD
+Depresi
+Gangguan kecemasan
+
+==========================================
 FORMAT OUTPUT
-====================================================
-
-=========================================
-       DRAF LAPORAN KRONOLOGI BEBRAVE
-=========================================
+==========================================
 
 1. WAKTU & TANGGAL KEJADIAN
 
@@ -253,46 +366,71 @@ FORMAT OUTPUT
 
 6. DAMPAK YANG DISEBUTKAN PENGGUNA
 
------------------------------------------
-PENTING:
-Draf ini dibuat secara otomatis oleh AI BeBrave berdasarkan informasi yang diberikan pengguna.
-Silakan periksa kembali seluruh isi sebelum digunakan sebagai dokumen resmi.
+==========================================
 
-====================================================
-CERITA PENGGUNA
-====================================================
+Sebelum mengirim jawaban lakukan pemeriksaan berikut:
+
+✓ Tidak ada informasi tambahan.
+✓ Tidak ada tebakan.
+✓ Tidak ada diagnosis.
+✓ Jam seperti 09.30 TIDAK terpecah menjadi 09. dan 30.
+✓ Hari seperti Senin masuk ke WAKTU, bukan PIHAK.
+✓ Teman kelas masuk ke PIHAK, bukan TEMPAT.
+✓ WhatsApp masuk ke TEMPAT/MEDIA bila disebut sebagai lokasi kejadian.
+✓ Seluruh isi laporan berasal dari cerita pengguna.
+
+Cerita pengguna:
 
 ${teksCerita}
-
-====================================================
-PEMERIKSAAN TERAKHIR
-====================================================
-
-Sebelum memberikan jawaban:
-
-- Pastikan tidak ada informasi yang kamu tambahkan sendiri.
-- Jika suatu informasi tidak ada dalam cerita, tulis "Tidak disebutkan."
-- Pastikan seluruh isi laporan hanya berasal dari cerita pengguna.
 `;
 
-  const response = await fetch(GEMINI_API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }]
-    })
-  });
+const response = await fetch(GEMINI_API_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-goog-api-key": GEMINI_API_KEY
+  },
+  body: JSON.stringify({
+    contents: [
+      {
+        parts: [
+          {
+            text: prompt
+          }
+        ]
+      }
+    ],
+    generationConfig: {
+      temperature: 0,
+      topP: 0.1,
+      topK: 1,
+      maxOutputTokens: 4096
+    }
+  })
+});
 
-  if (!response.ok) {
-    throw new Error(`Gemini API merespons dengan error: ${response.status}`);
-  }
+if (!response.ok) {
+    const errorText = await response.text();
+    console.error("GEMINI ERROR:", errorText);
 
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    throw new Error(
+        `Gemini API merespons dengan error ${response.status}\n${errorText}`
+    );
+}
 
-  if (!text) {
-    throw new Error("Gemini API tidak mengembalikan hasil teks.");
-  }
+const data = await response.json();
 
-  return text.trim();
+const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+console.log("===== RAW GEMINI =====");
+console.log(JSON.stringify(text));
+console.log("===== RESPONSE GEMINI =====");
+console.log(data);
+console.log("===== TEKS GEMINI =====");
+console.log(text);
+
+if (!text) {
+  throw new Error("Gemini API tidak mengembalikan hasil teks.");
+}
+
+return text.trim();
 }
