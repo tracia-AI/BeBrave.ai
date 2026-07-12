@@ -13,11 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTimelineGenerator();
     initScrollEffects();
   } catch (err) {
-    console.error("=== GEMINI ERROR ===", err);
-
-    const parsedData = parseChronology(text);
-    reportText = generateReportPlainText(parsedData);
-    showToast("Mode cadangan lokal digunakan (API tidak tersedia).");
+    console.error("=== INIT ERROR ===", err);
   }
 
   // Run premium micro-interactions
@@ -131,39 +127,6 @@ function createFloatingParticles() {
  * @returns {Promise<string>} - teks laporan kronologi dari AI
  */
 async function callGeminiAPI(teksCerita) {
-  const prompt = `
-  ...
-  ${teksCerita}
-  `;
-
-  const response = await fetch("/.netlify/functions/gemini", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      prompt,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(errorText);
-    throw new Error(`Netlify Function Error: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  if (!text) {
-    console.error(data);
-    throw new Error("Gemini tidak mengembalikan teks.");
-  }
-
-  return text.trim();
-}
-
   const prompt = `
 Kamu adalah AI Assistant BeBrave.
 
@@ -410,35 +373,32 @@ Cerita pengguna:
 ${teksCerita}
 `;
 
-const response = await fetch("/.netlify/functions/gemini", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    prompt,
-  }),
-});
+  const response = await fetch("/.netlify/functions/gemini", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt,
+    }),
+  });
 
-if (!response.ok) {
-  const errorText = await response.text();
-  console.error("NETLIFY FUNCTION ERROR:", errorText);
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("NETLIFY FUNCTION ERROR:", errorText);
+    throw new Error(
+      `Netlify Function merespons dengan error ${response.status}\n${errorText}`
+    );
+  }
 
-  throw new Error(
-    `Netlify Function merespons dengan error ${response.status}\n${errorText}`
-  );
+  const data = await response.json();
+
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    console.error("Gemini tidak mengembalikan teks:", data);
+    throw new Error("Gemini API tidak mengembalikan hasil teks.");
+  }
+
+  return text.trim();
 }
-
-const data = await response.json();
-
-console.log("===== RESPONSE GEMINI =====");
-console.log(data);
-
-const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-if (!text) {
-  console.error("Gemini tidak mengembalikan teks:", data);
-  throw new Error("Gemini API tidak mengembalikan hasil teks.");
-}
-
-return text.trim();

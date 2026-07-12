@@ -73,20 +73,29 @@ function initTimelineGenerator() {
       // 2a. Try the real Gemini API call first
       reportText = await callGeminiAPI(text);
     } catch (err) {
-    console.error(err);
+      console.error(err);
 
-    outputBox.innerHTML = `
-        <div class="timeline-error">
-            <h3>AI sedang tidak tersedia</h3>
-            <p>Gagal menghubungi Gemini (${err.message}).</p>
-            <p>Silakan coba beberapa saat lagi.</p>
-        </div>
-    `;
+      // 2b. Gemini failed (missing key, quota, network, etc.) --
+      // fall back to the local simulated parser so the page never
+      // shows a dead-end error state to the user.
+      const parsedData = parseChronology(text);
 
-    generateBtn.disabled = false;
-    generateBtn.style.opacity = "1";
-    return;
-}
+      if (!parsedData) {
+        outputBox.innerHTML = `
+          <div class="timeline-error">
+              <h3>AI sedang tidak tersedia</h3>
+              <p>Gagal menghubungi Gemini (${err.message}).</p>
+              <p>Silakan coba beberapa saat lagi.</p>
+          </div>
+        `;
+        generateBtn.disabled = false;
+        generateBtn.style.opacity = "1";
+        return;
+      }
+
+      reportText = generateReportPlainText(parsedData);
+      showToast("Mode cadangan lokal digunakan (API tidak tersedia).");
+    }
 
     // Store the final report text so copy/download can reuse it directly
     outputBox.dataset.reportText = reportText;
