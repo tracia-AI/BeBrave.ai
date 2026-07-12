@@ -121,9 +121,6 @@ function createFloatingParticles() {
 // Dengan begini, walaupun key ini kelihatan di source code publik,
 // key HANYA bisa dipanggil dari domain BeBrave sendiri, jadi orang
 // lain tidak bisa mencuri dan memakainya dari tempat lain.
-const GEMINI_API_KEY = "API_KEY_HERE";
-const GEMINI_API_URL =
-`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent`;
 
 /**
  * Memanggil Google Gemini API untuk menyusun cerita bebas pengguna
@@ -134,9 +131,38 @@ const GEMINI_API_URL =
  * @returns {Promise<string>} - teks laporan kronologi dari AI
  */
 async function callGeminiAPI(teksCerita) {
-  if (!GEMINI_API_KEY || GEMINI_API_KEY.startsWith("PASTE_")) {
-    throw new Error("Gemini API key belum di-set di app.js.");
+  const prompt = `
+  ...
+  ${teksCerita}
+  `;
+
+  const response = await fetch("/.netlify/functions/gemini", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(errorText);
+    throw new Error(`Netlify Function Error: ${response.status}`);
   }
+
+  const data = await response.json();
+
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    console.error(data);
+    throw new Error("Gemini tidak mengembalikan teks.");
+  }
+
+  return text.trim();
+}
 
   const prompt = `
 Kamu adalah AI Assistant BeBrave.
@@ -384,53 +410,35 @@ Cerita pengguna:
 ${teksCerita}
 `;
 
-const response = await fetch(GEMINI_API_URL, {
+const response = await fetch("/.netlify/functions/gemini", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "X-goog-api-key": GEMINI_API_KEY
   },
   body: JSON.stringify({
-    contents: [
-      {
-        parts: [
-          {
-            text: prompt
-          }
-        ]
-      }
-    ],
-    generationConfig: {
-      temperature: 0,
-      topP: 0.1,
-      topK: 1,
-      maxOutputTokens: 4096
-    }
-  })
+    prompt,
+  }),
 });
 
 if (!response.ok) {
-    const errorText = await response.text();
-    console.error("GEMINI ERROR:", errorText);
+  const errorText = await response.text();
+  console.error("NETLIFY FUNCTION ERROR:", errorText);
 
-    throw new Error(
-        `Gemini API merespons dengan error ${response.status}\n${errorText}`
-    );
+  throw new Error(
+    `Netlify Function merespons dengan error ${response.status}\n${errorText}`
+  );
 }
 
 const data = await response.json();
 
-const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-console.log("===== RAW GEMINI =====");
-console.log(JSON.stringify(text));
 console.log("===== RESPONSE GEMINI =====");
 console.log(data);
-console.log("===== TEKS GEMINI =====");
-console.log(text);
+
+const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
 if (!text) {
+  console.error("Gemini tidak mengembalikan teks:", data);
   throw new Error("Gemini API tidak mengembalikan hasil teks.");
 }
 
 return text.trim();
-}
