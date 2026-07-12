@@ -10,11 +10,7 @@
  * Environment variables -> GEMINI_API_KEY
  */
 
-<<<<<<< HEAD
 const GEMINI_MODEL = "gemini-flash-latest";
-=======
-const GEMINI_MODEL = "gemini-2.5-flash";
->>>>>>> 900758558c3da03cc28a0ae4ded6ce2c9de7832d
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 exports.handler = async (event) => {

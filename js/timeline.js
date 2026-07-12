@@ -118,11 +118,25 @@ function initTimelineGenerator() {
     function type() {
       if (i < reportHtml.length) {
         if (reportHtml.charAt(i) === '<') {
-          // Find end of HTML tag
+          // Find end of HTML tag - insert the whole tag in one go
           const tagEnd = reportHtml.indexOf('>', i);
           if (tagEnd !== -1) {
             outputBox.innerHTML += reportHtml.substring(i, tagEnd + 1);
             i = tagEnd + 1;
+          } else {
+            outputBox.innerHTML += reportHtml.charAt(i);
+            i++;
+          }
+        } else if (reportHtml.charAt(i) === '&') {
+          // Find end of HTML entity (e.g. &amp; &lt; &gt;) - insert the
+          // whole entity in one go. Splitting it mid-entity across
+          // separate innerHTML writes causes the browser to re-escape
+          // it on read-back, resulting in visible double-escaped text
+          // like "&amp;" instead of "&".
+          const entityEnd = reportHtml.indexOf(';', i);
+          if (entityEnd !== -1 && entityEnd - i <= 6) {
+            outputBox.innerHTML += reportHtml.substring(i, entityEnd + 1);
+            i = entityEnd + 1;
           } else {
             outputBox.innerHTML += reportHtml.charAt(i);
             i++;
