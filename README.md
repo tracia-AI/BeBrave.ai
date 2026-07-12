@@ -40,14 +40,6 @@ https://bebraveaimarkoding.netlify.app/
 <img width="1920" height="947" alt="image" src="https://github.com/user-attachments/assets/0dff23cd-1782-485f-af75-1f572c0efbea" />
 <img width="1918" height="945" alt="image" src="https://github.com/user-attachments/assets/2aec5b8a-d54e-430a-a791-6fe1325da734" />
 
-Contoh:
-```
-assets/screenshot-home.png
-```
-atau gunakan gambar GitHub.
-
----
-
 ## 🛠️ Teknologi
 
 - HTML5
