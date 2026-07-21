@@ -177,4 +177,4 @@ Terima kasih kepada:
 - Google Gemini API
 - Netlify
 - Markoding
-- Seluruh pihak yang mendukung pengembangan BeBrave AI
+- Seluruh pihak yang sudah mendukung pengembangan BeBrave AI
